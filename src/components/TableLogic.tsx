@@ -3,12 +3,13 @@ import Cardcomms from "./Cardcomms";
 import { Comment } from "../models/commentType";
 // import "./Table.css";
 // import CustomTable from "./CustomTable";
-//fare due componenti diversi, uno con la logica e l'altro solo con l'html, 
+
 const TableLogic = () => {
   const [comments, setComments] = useState<Comment[]>([])
   const [limit, setLimitstate] = useState(10)
-  const [count, setCount] = useState(0)
   const [show, setShow] = useState(false)
+  const [isScrolled, setisScrolled] = useState(false)
+
   useEffect(() => {
       fetchAPI();
     }, [limit]); 
@@ -24,25 +25,33 @@ const TableLogic = () => {
       console.log("Request Failed", err);
     }
   }
-  const hideBtn = useCallback(() => {
-      setShow(true);
-      setTimeout(() => {
-        setShow(false); 
-      }, 1000);
-    }, []);
-  const handleInc = useCallback ((limit : number) => {
-      hideBtn();
+
+  const handleScroll = () => {
+    if (
+      window.innerHeight + window.scrollY >=
+      document.body.scrollHeight - 500
+    ) {
+      // fetchData();
       setLimitstate(limit + 10);
-      setCount(count + 1)
-  }, [limit])
+      console.log(limit);
+      console.log(window.innerHeight);
+      setisScrolled(true);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      setisScrolled(false)
+      console.log(isScrolled, limit)
+    };
+  }, [isScrolled]);
 
   return (
     <div>
       {<Cardcomms
        comments={comments}
-       handleInc={handleInc}
-       count={count}
-       show={show}
        limit={limit}
       />}
     </div>

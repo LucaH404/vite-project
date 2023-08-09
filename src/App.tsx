@@ -6,7 +6,7 @@ import TableLogic from './components/TableLogic'
 function App() {
   return (
     <>
-    <TableLogic/>
+      <TableLogic/>
     </>
   )
 }
