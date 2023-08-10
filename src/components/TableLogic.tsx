@@ -6,11 +6,13 @@ const TableLogic = () => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [limit, setLimitstate] = useState(10);
   const [isLoading, setIsLoading] = useState(false);
+  const [dataTotal, setDataTotal] = useState(0);
   useEffect(() => {
     fetchAPI();
   }, [limit]);
   
   let skip = 0;
+  // let dataTotal = 0;
   async function fetchAPI() {
     try {
       setIsLoading(true);
@@ -19,6 +21,8 @@ const TableLogic = () => {
       const data = await response.json();
       setComments(data.comments);
       setIsLoading(false);
+      setDataTotal(prev => data.total)
+      // console.log(dataTotal)
     } catch (err) {
       console.log("Request Failed", err);
       setIsLoading(false);
@@ -26,7 +30,7 @@ const TableLogic = () => {
   }
 
   const handleScroll = () => {
-    if(limit < 340){
+    if(limit < dataTotal){
       if (!isLoading && window.innerHeight + window.scrollY >= document.body.scrollHeight - 500) {
         setLimitstate(limit + 10);
       }
@@ -38,6 +42,7 @@ const TableLogic = () => {
     window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      // console.log(dataTotal)
       console.log(limit)
     };
   }, [isLoading]);
