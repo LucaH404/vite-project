@@ -13,7 +13,7 @@ const Cardcomms: React.FC<CustomTableProps> = ({
   return (
     <>
       {comments.map((comment) => (
-        <Card key={comment.id} title={comment.user.username} bordered={false} style={{ width: 300 }}>
+        <Card key={comment.id} className="mb-5" title={comment.user.username} bordered={false} style={{ width: 300 }}>
           <p>{comment.body}</p>
           <p>Card content</p>
           <p>Card content</p>
