@@ -6,11 +6,10 @@ const TableLogic = () => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [limit, setLimitstate] = useState(10);
   const [isLoading, setIsLoading] = useState(false);
-
   useEffect(() => {
     fetchAPI();
   }, [limit]);
-
+  
   let skip = 0;
   async function fetchAPI() {
     try {
@@ -27,15 +26,19 @@ const TableLogic = () => {
   }
 
   const handleScroll = () => {
-    if (!isLoading && window.innerHeight + window.scrollY >= document.body.scrollHeight - 500) {
-      setLimitstate(limit + 10);
+    if(limit < 340){
+      if (!isLoading && window.innerHeight + window.scrollY >= document.body.scrollHeight - 500) {
+        setLimitstate(limit + 10);
+      }
     }
+    else return null
   };
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      console.log(limit)
     };
   }, [isLoading]);
 
@@ -48,3 +51,5 @@ const TableLogic = () => {
 };
 
 export default TableLogic;
+
+//impedire che superati i 340 elementi l'api continui a fare chiamate 
