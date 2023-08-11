@@ -30,13 +30,15 @@ const TableLogic = () => {
   }
 
   const handleScroll = () => {
-    if(limit <= comments.length){
-      if(limit < dataTotal){
+    if(limit < dataTotal){
         if (!isLoading && window.innerHeight + window.scrollY >= document.body.scrollHeight - 500) {
-          setLimitstate(limit + 7);
+          setLimitstate(limit + 7); 
+            if (limit > 340){
+            setLimitstate(prev => 340);
+          }
         }
+       
       }
-    }
     else return null
   };
 
