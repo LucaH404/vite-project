@@ -30,9 +30,11 @@ const TableLogic = () => {
   }
 
   const handleScroll = () => {
-    if(limit < dataTotal){
-      if (!isLoading && window.innerHeight + window.scrollY >= document.body.scrollHeight - 500) {
-        setLimitstate(limit + 10);
+    if(limit <= comments.length){
+      if(limit < dataTotal){
+        if (!isLoading && window.innerHeight + window.scrollY >= document.body.scrollHeight - 500) {
+          setLimitstate(limit + 7);
+        }
       }
     }
     else return null
@@ -44,6 +46,7 @@ const TableLogic = () => {
       window.removeEventListener("scroll", handleScroll);
       // console.log(dataTotal)
       console.log(limit)
+      console.log('commenti:'+ (comments.length))
     };
   }, [isLoading]);
 
