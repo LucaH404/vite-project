@@ -4,14 +4,14 @@ import { Comment } from "../models/commentType";
 
 const TableLogic = () => {
   const [comments, setComments] = useState<Comment[]>([]);
-  const [limit, setLimitstate] = useState(10);
+  const [limit, setLimitstate] = useState(7);
   const [isLoading, setIsLoading] = useState(false);
   const [dataTotal, setDataTotal] = useState(0);
+  const [skip, setSkip] = useState(0);
   useEffect(() => {
     fetchAPI();
-  }, [limit]);
+  }, [limit, skip]);
   
-  let skip = 0;
   // let dataTotal = 0;
   async function fetchAPI() {
     try {
@@ -28,27 +28,32 @@ const TableLogic = () => {
       setIsLoading(false);
     }
   }
+//
+const handleScroll = useCallback(() => {
+  if (limit || skip < dataTotal) {
+    if (!isLoading && window.innerHeight + window.scrollY >= document.body.scrollHeight - 500) {
+      // // setLimitstate(prev => {
+      // //   const limitCap = prev + 10;
+      // //   return Math.min(limitCap, dataTotal);
+      // });
+    setSkip(prev => {
+        const skipCap = prev += limit;
+        return Math.min(skipCap, dataTotal - limit);
+      });
+    skip === dataTotal - limit ? null : window.scrollTo(0, 0)
+    }
+  }
+}, [limit, dataTotal, isLoading, skip]);
 
-  const handleScroll = () => {
-    if(limit < dataTotal){
-        if (!isLoading && window.innerHeight + window.scrollY >= document.body.scrollHeight - 500) {
-          setLimitstate(limit + 7); 
-            if (limit > 340){
-            setLimitstate(prev => 340);
-          }
-        }
-       
-      }
-    else return null
-  };
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      // console.log(dataTotal)
-      console.log(limit)
-      console.log('commenti:'+ (comments.length))
+      // console.log('datatotal ' + dataTotal)
+      console.log('limit ' + limit + 'skip ' + skip)
+
+      // console.log('commenti: '+ (comments.length))
     };
   }, [isLoading]);
 
