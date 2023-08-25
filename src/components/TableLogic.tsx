@@ -12,7 +12,6 @@ const TableLogic = () => {
     fetchAPI();
   }, [limit, skip]);
   
-  // let dataTotal = 0;
   async function fetchAPI() {
     try {
       setIsLoading(true);
@@ -22,38 +21,36 @@ const TableLogic = () => {
       setComments(data.comments);
       setIsLoading(false);
       setDataTotal(prev => data.total)
-      // console.log(dataTotal)
     } catch (err) {
       console.log("Request Failed", err);
       setIsLoading(false);
     }
   }
-//
 const handleScroll = useCallback(() => {
-  if (limit || skip < dataTotal) {
-    if (!isLoading && window.innerHeight + window.scrollY >= document.body.scrollHeight - 500) {
-      // // setLimitstate(prev => {
-      // //   const limitCap = prev + 10;
-      // //   return Math.min(limitCap, dataTotal);
-      // });
-    setSkip(prev => {
-        const skipCap = prev += limit;
-        return Math.min(skipCap, dataTotal - limit);
+  if (!isLoading && skip < dataTotal) {
+    let cap = 0
+    if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 200) {
+      setSkip(prev => {
+        const skipCap = prev + limit;
+        if ((dataTotal - skip) < limit){
+          cap = dataTotal - skip
+        }
+        // console.log(cap)
+        return Math.min(skipCap, dataTotal - cap);
       });
-    skip === dataTotal - limit ? null : window.scrollTo(0, 0)
     }
+    // console.log("cap: " + ( cap) +"skip: " +skip)
+    skip === dataTotal - cap ? null : window.scrollTo(0, 0);
   }
 }, [limit, dataTotal, isLoading, skip]);
+
 
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      // console.log('datatotal ' + dataTotal)
       console.log('limit ' + limit + 'skip ' + skip)
-
-      // console.log('commenti: '+ (comments.length))
     };
   }, [isLoading]);
 
@@ -66,5 +63,3 @@ const handleScroll = useCallback(() => {
 };
 
 export default TableLogic;
-
-//impedire che superati i 340 elementi l'api continui a fare chiamate 
