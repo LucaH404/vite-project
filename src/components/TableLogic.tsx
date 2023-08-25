@@ -8,6 +8,7 @@ const TableLogic = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [dataTotal, setDataTotal] = useState(0);
   const [skip, setSkip] = useState(0);
+  
   useEffect(() => {
     fetchAPI();
   }, [limit, skip]);
@@ -18,9 +19,9 @@ const TableLogic = () => {
       const url = `https://dummyjson.com/comments?skip=${skip}&limit=${limit}`;
       const response = await fetch(url);
       const data = await response.json();
-      setComments(data.comments);
+      setComments(prevComments => [...prevComments, ...data.comments]);
       setIsLoading(false);
-      setDataTotal(prev => data.total)
+      setDataTotal(data.total);
     } catch (err) {
       console.log("Request Failed", err);
       setIsLoading(false);
@@ -35,12 +36,9 @@ const handleScroll = useCallback(() => {
         if ((dataTotal - skip) < limit){
           cap = dataTotal - skip
         }
-        // console.log(cap)
         return Math.min(skipCap, dataTotal - cap);
       });
     }
-    // console.log("cap: " + ( cap) +"skip: " +skip)
-    skip === dataTotal - cap ? null : window.scrollTo(0, 0);
   }
 }, [limit, dataTotal, isLoading, skip]);
 
@@ -61,5 +59,4 @@ const handleScroll = useCallback(() => {
     </div>
   );
 };
-
 export default TableLogic;
